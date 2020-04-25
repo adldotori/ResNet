@@ -52,6 +52,9 @@ class ResNet_CIFAR10(nn.Module):
         self.conv3 = nn.Sequential(*self.conv3)
         self.conv4 = nn.Sequential(*self.conv4)
 
+        self.gap = nn.AvgPool2d(kernel_size=8)
+        self.fc = nn.Linear(64, 10)
+
         self.apply(_weights_init)
 
     def forward(self, x):
@@ -59,7 +62,11 @@ class ResNet_CIFAR10(nn.Module):
         x = self.conv2(x)
         x = self.conv3(x)
         x = self.conv4(x)
+        x = self.gap(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
         return x
+
 if __name__ == '__main__':
     batch_size = 4
 
